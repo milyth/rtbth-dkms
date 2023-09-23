@@ -1,1 +1,7 @@
 .kdev*
+*.o
+*.cmd
+*.mod
+*.mod.*
+[m|M]odule*.*
+*.ko

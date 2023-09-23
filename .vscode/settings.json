@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "rt_linux.h": "c",
+        "rtbth_dbg.h": "c",
+        "rtbt_ctrl.h": "c",
+        "rtbth_3298.h": "c"
+    }
+}

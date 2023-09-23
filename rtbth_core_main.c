@@ -30,14 +30,20 @@
 #include "rtbt_osabl.h"
 #include "rtbth_3298.h"
 #include "rtbt_ctrl.h"
+#include <linux/fs.h>
+#include <linux/kdev_t.h>
+#include <linux/device.h>
 
-#define VERSION	"3.9.8"
+static struct class *deviceClass;
 
-MODULE_AUTHOR("Ralink Tech.");
+#define VERSION "4.0.0"
+
+MODULE_AUTHOR("Ralink Tech & Mily.");
 MODULE_DESCRIPTION("Support for Ralink Bluetooth RT3290 Cards");
 MODULE_LICENSE("GPL");
 MODULE_VERSION(VERSION);
 
+static dev_t mainDevice = 0;
 
 static struct rtbt_dev_entry *rtbt_pci_dev_list = NULL;
 
@@ -50,27 +56,59 @@ static int __init rtbth_init(void)
 #ifdef RT3298
 	ent = rtbt_3298_init();
 #endif // RT3298 //
+	
+	
+	// if (alloc_chrdev_region(&mainDevice, MKDEV(192, 0),0, "rtcore") < 0)
+	// {
+	// 	pr_err("Unable to allocate character device for rtusb.");
+	// 	return -1;
+	// }
+
 
 	if (ent)
 	{
 		rtbt_pci_dev_list = ent;
 		ral_os_register(rtbt_pci_dev_list);
 	}
+		mainDevice = MKDEV(192, 0);
+	register_chrdev_region(mainDevice, 1, "rtBth");
 
-    DebugPrint(TRACE, DBG_INIT, "<---%s()\n", __FUNCTION__);
+
+	deviceClass = class_create("RtClass");
+	if (IS_ERR(deviceClass)) {
+		pr_err("Unable to allocate class for module");
+		goto byeClass;
+	}
+
+	if(IS_ERR(device_create(deviceClass, NULL, mainDevice, NULL, "rtbth")))
+	{
+		pr_err("Unable to create rtbth device!");
+		goto byeDevice;
+	}
+
+	DebugPrint(TRACE, DBG_INIT, "<---%s()\n", __FUNCTION__);
 	return 0;
+byeDevice:
+	class_destroy(deviceClass);
+byeClass:
+	unregister_chrdev_region(mainDevice, 1);
+	return -1;
 }
 
 static void __exit rtbth_exit(void)
 {
-	DebugPrint(TRACE, DBG_INIT,"--->%s()\n", __FUNCTION__);
-
+	DebugPrint(TRACE, DBG_INIT, "--->%s()\n", __FUNCTION__);
 	if (rtbt_pci_dev_list)
 		ral_os_unregister(rtbt_pci_dev_list);
 #ifdef RT3298
 	rtbt_3298_exit();
 #endif // RT3298 //
-	DebugPrint(TRACE, DBG_INIT,"<---%s()\n", __FUNCTION__);
+      	device_destroy(deviceClass,mainDevice);
+	class_destroy(deviceClass);
+	unregister_chrdev_region(mainDevice, 1);
+
+
+	DebugPrint(TRACE, DBG_INIT, "<---%s()\n", __FUNCTION__);
 }
 
 module_init(rtbth_init);
