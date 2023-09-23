@@ -30,15 +30,14 @@
 //
 // Global debug error level
 //
-unsigned long DebugLevel = ERROR;
+unsigned long DebugLevel = INFO;
 unsigned long DebugFlag = 0xFFFFFFFF;
 
-void DebugPrint(unsigned long DebugPrintLevel, unsigned long DebugPrintFlag,
+
+inline void DebugPrintImpl(unsigned long DebugPrintLevel, unsigned long DebugPrintFlag,
 		unsigned char *DebugMessage, ...)
 {
-#ifdef DBG
 	va_list args;
-
 	va_start(args, DebugMessage);
 	if (DebugMessage) {
 		// if ((DebugPrintLevel <= INFO) ||
@@ -46,13 +45,18 @@ void DebugPrint(unsigned long DebugPrintLevel, unsigned long DebugPrintFlag,
 		//	  ((DebugPrintFlag & DebugFlag) == DebugPrintFlag))
 		//)
 		if (DebugPrintLevel <= DebugLevel)
+		{
+			// printk(KERN_SOH "%ld%s: ", DebugPrintLevel, KBUILD_MODNAME);
+		
 			vprintk(DebugMessage, args);
+		}
 	}
+
 	va_end(args);
 	if (DebugPrintLevel == FATAL)
 		dump_stack();
-#endif
 }
+
 
 int hex_dump(char *title, char *dumpBuf, int len)
 {

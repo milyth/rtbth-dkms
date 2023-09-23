@@ -51,6 +51,7 @@ static int __init rtbth_init(void)
 	struct rtbt_dev_entry *ent;
 
 	DebugPrint(TRACE, DBG_INIT, "--->%s()\n", __FUNCTION__);
+	
 
 #ifdef RT3298
 	ent = rtbt_3298_init();
@@ -61,6 +62,7 @@ static int __init rtbth_init(void)
 		ral_os_register(rtbt_pci_dev_list);
 	}
 
+	
 	mainDevice = MKDEV(192, 0);
 	register_chrdev_region(mainDevice, 1, "rtBth");
 
@@ -75,7 +77,7 @@ static int __init rtbth_init(void)
 		pr_err("Unable to create rtbth device!");
 		goto byeDevice;
 	}
-
+	
 	DebugPrint(TRACE, DBG_INIT, "<---%s()\n", __FUNCTION__);
 	return 0;
 byeDevice:

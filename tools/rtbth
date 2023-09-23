@@ -38,4 +38,7 @@ modprobe rtbth
 /opt/ralink/rtbt &
 pid=$!
 
+# Make realtime!
+chrt -d -p $pid
+renice -n -20 -p $pid
 wait

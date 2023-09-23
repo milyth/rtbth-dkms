@@ -325,7 +325,8 @@ NDIS_STATUS ral_task_kill(IN KTHREAD *pTask);
 /*
 	Debug related functions
 */
-VOID DebugPrint(__in ULONG level, __in ULONG flag, __in PUCHAR msg, ...);
+
+inline VOID DebugPrintImpl(__in ULONG level, __in ULONG flag, __in PUCHAR msg, ...);
 
 VOID Bth_Dbg_DumpBuffer(IN PVOID Buffer, IN LONG Length, IN ULONG Offset,
 			IN PVOID pOpaque,

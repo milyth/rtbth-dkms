@@ -924,7 +924,7 @@ NTSTATUS BthInitSend(IN RTBTH_ADAPTER *pAd)
 	RingBasePa = (PHYSICAL_ADDRESS)(((UINT32)pTxDescBuf->AllocPa + 0xf) &
 					(~0xf));
 	RtlZeroMemory(pTxDescBuf->AllocVa, pTxDescBuf->AllocSize);
-	DebugPrint(INFO, DBG_INIT,
+	DebugPrint(NOISY, DBG_INIT,
 		   "AllocTxDescRing at 0x%x(phy_addr:0x%x, len 0x%x)!\n"
 		   "\tAfter Aligned, RingBaseVa at 0x%x(0x%x)\n",
 		   pTxDescBuf->AllocVa, pTxDescBuf->AllocPa,
@@ -939,7 +939,7 @@ NTSTATUS BthInitSend(IN RTBTH_ADAPTER *pAd)
 		UINT32 PerRingAllocBuffSz = 0;
 
 		DebugPrint(
-			INFO, DBG_INIT,
+			NOISY, DBG_INIT,
 			"Assign TxRing(Idx:%d) at virtAddr(0x%x), phyAddr(0x%x)\n",
 			Num, RingBaseVa, RingBasePaLow);
 		if (BthInitTxRingByIdx(pAd, Num, RingBaseVa, RingBasePaHigh,
@@ -1041,7 +1041,7 @@ NTSTATUS BthInitRecv(IN RTBTH_ADAPTER *pAd)
 		RT_IO_WRITE32(pAd, RX_CRX_IDX + Num * RINGREG_DIFF,
 			      (RX_RING_SIZE - 1));
 
-		DebugPrint(ERROR, DBG_INIT, "RX_Base_PTR%d(0x%02x)= 0x%x\n",
+		DebugPrint(NOISY, DBG_INIT, "RX_Base_PTR%d(0x%02x)= 0x%x\n",
 			   Num, RX_BASE_PTR0 + Num * RINGREG_DIFF, RingPa);
 
 		RingBaseVa = pRxDescRing->AllocVa;
@@ -1510,7 +1510,7 @@ int rtbt_pci_isr(IN void *handle)
 	if (!RT_TEST_FLAG(pAd, fRTMP_ADAPTER_INTERRUPT_IN_USE) ||
 	    ((IntStatus & IntMask) == 0)) {
 		DebugPrint(
-			INFO, DBG_INIT,
+			NOISY, DBG_INIT,
 			"pAd->Flags=0x%x(%d), IntStatus=0x%x, IntMask=0x%x(0x%x)\n",
 			pAd->Flags,
 			RT_TEST_FLAG(pAd, fRTMP_ADAPTER_INTERRUPT_IN_USE),

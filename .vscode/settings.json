@@ -3,6 +3,11 @@
         "rt_linux.h": "c",
         "rtbth_dbg.h": "c",
         "rtbt_ctrl.h": "c",
-        "rtbth_3298.h": "c"
+        "rtbth_3298.h": "c",
+        "pr.h": "c",
+        "version.h": "c",
+        "stdarg.h": "c",
+        "rtbt_type.h": "c",
+        "rtbt_dbg.h": "c"
     }
 }

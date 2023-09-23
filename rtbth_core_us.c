@@ -674,7 +674,7 @@ static int rtbth_us_open(struct inode *inode, struct file *file)
 	if (rtbt_hps_iface_attach(gpAd->os_ctrl)) {
 		DebugPrint(ERROR, DBG_INIT, "rtbt_hps_iface_attach fail\n");
 	} else {
-		DebugPrint(ERROR, DBG_INIT, "rtbt_hps_iface_attach ok\n");
+		DebugPrint(NOISY, DBG_INIT, "rtbt_hps_iface_attach ok\n");
 	}
 
 	return 0;
@@ -694,7 +694,7 @@ static int rtbth_us_close(struct inode *inode, struct file *file)
 	if (rtbt_hps_iface_detach(gpAd->os_ctrl)) {
 		DebugPrint(ERROR, DBG_INIT, "rtbt_hps_iface_detach fail\n");
 	} else {
-		DebugPrint(ERROR, DBG_INIT, "rtbt_hps_iface_detach ok\n");
+		DebugPrint(NOISY, DBG_INIT, "rtbt_hps_iface_detach ok\n");
 	}
 #if 0
     if(rtbt_hps_iface_deinit(RAL_INF_PCI, gpAd->os_ctrl->if_dev, gpAd->os_ctrl)){
@@ -723,7 +723,7 @@ ssize_t rtbth_us_read(struct file *filp, char __user *buf, size_t count,
 	while (1) {
 		if (kfifo_len(gpAd->evt_fifo) > 0) {
 			RtlAssert(kfifo_out(gpAd->evt_fifo, &evt,
-					    sizeof(RTBTH_EVENT_T)) > 1);
+					    sizeof(RTBTH_EVENT_T)) > 0);
 			DebugPrint(TRACE, DBG_INIT, "%s: event fifo len = %d\n",
 				   __func__, kfifo_len(gpAd->evt_fifo));
 			break;
@@ -752,7 +752,7 @@ ssize_t rtbth_us_read(struct file *filp, char __user *buf, size_t count,
 							__func__, wait_ret);
 					}
 				} else {
-					DebugPrint(INFO, DBG_INIT,
+					DebugPrint(NOISY, DBG_INIT,
 						   "%s: wait timeout %d\n ",
 						   __func__, wait_ret);
 					retval = -EFAULT;
@@ -1868,7 +1868,7 @@ long rtbth_us_unlocked_ioctl(struct file *filp, unsigned int cmd,
 					break;
 				}
 
-				RtlAssert(kfifo_out(fifo, buf, pkt_len) > 1);
+				RtlAssert(kfifo_out(fifo, buf, pkt_len) == pkt_len);
 				//} else {
 				//    DebugPrint(ERROR, DBG_INIT,"@@@@read rx err: data not available,
 				//    kfifo_len (%d),  sizeof(RXBI_STRUC)=%d, sizeof(unsigned
@@ -2011,8 +2011,9 @@ long rtbth_us_unlocked_ioctl(struct file *filp, unsigned int cmd,
 					   __LINE__);
 				break;
 			}
-			DebugPrint(ERROR, DBG_INIT,
-				   "RTBTH_IOCDMAC: dmac.dmac_op=%d\n",
+
+			DebugPrint(NOISY, DBG_INIT,
+				   "Received RTBTH_IOCDMAC. dmac.dmac_op changed to %d\n",
 				   dmac.dmac_op);
 
 			if (dmac.dmac_op == 0) {
@@ -2058,7 +2059,7 @@ long rtbth_us_unlocked_ioctl(struct file *filp, unsigned int cmd,
 				pollm = 1;
 			else
 				pollm = 0;
-			DebugPrint(INFO, DBG_INIT, "Set Poll Mode = %d\n",
+			DebugPrint(NOISY, DBG_INIT, "Set Poll Mode = %d\n",
 				   pollm);
 		} while (0);
 		break;

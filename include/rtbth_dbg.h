@@ -24,8 +24,12 @@
 *                                                                       *
 *************************************************************************/
 
+
 #ifndef __RTBTH_DBG_H
 #define __RTBTH_DBG_H
+
+#include <linux/printk.h>
+#include <linux/kmod.h>
 
 #define NONE 0 //  Tracing is not on
 #define FATAL 1 // Abnormal exit or termination
@@ -38,9 +42,14 @@
 
 #define DBG_INIT 0x00000001
 
-void DebugPrint(unsigned long level, unsigned long flag, unsigned char *msg,
+
+
+inline void DebugPrintImpl(unsigned long level, unsigned long flag, unsigned char *msg,
 		...);
 
 int hex_dump(char *title, char *dumpBuf, int len);
+
+#define DebugPrint(level, flag, msg, ...) \
+	DebugPrintImpl(level, flag, KERN_SOH "%d" KBUILD_MODNAME ": " msg, level, ##__VA_ARGS__)
 
 #endif

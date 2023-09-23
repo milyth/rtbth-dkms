@@ -26,6 +26,7 @@
 
 #include "include/rt_linux.h"
 #include "include/rtbt_osabl.h"
+#include "include/rtbth_dbg.h"
 
 static DEFINE_SPINLOCK(g_reslock);
 

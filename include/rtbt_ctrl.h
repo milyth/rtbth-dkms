@@ -31,6 +31,7 @@
 #include "rtbt_osabl.h"
 #include "rtbt_pci.h"
 #include "rtbth_us.h"
+#include "rtbth_dbg.h"
 
 //#include "rtbt_pci.h"
 //#include "bt_controller.h"

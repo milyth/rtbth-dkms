@@ -26,7 +26,6 @@
 
 #ifndef __RTBT_TYPE_H
 #define __RTBT_TYPE_H
-
 #ifdef __GNUC__
 
 #include <linux/version.h>
@@ -38,6 +37,7 @@
 #endif
 
 #endif // __GNUC__ //
+
 
 typedef signed char INT8;
 typedef unsigned char UINT8;
@@ -218,12 +218,11 @@ typedef struct _LIST_ENTRY {
 #endif /* DBG */
 
 #define ASSERT RTBT_ASSERT
-
-#define RtlAssert(x)                                         \
-	if (!(x)) {                                          \
-		pr_err("RtlAssert failed at line %d in %s\n" \
-		       "\"" #x "\"\n",                       \
-		       __LINE__, __FILE__);                  \
+#define RtlAssert(x)                                                   \
+	if (unlikely(!(x))) {                                          \
+		pr_warn("%s: Assertion failed at line %d in %s\n"      \
+			"\"" #x "\"\n",                                \
+			module_name(THIS_MODULE), __LINE__, __FILE__); \
 	}
 
 #endif // __RTBT_TYPE_H //
