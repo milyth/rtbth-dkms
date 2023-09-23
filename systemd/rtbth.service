@@ -1,0 +1,9 @@
+[Unit]
+Description = Load Bluetooth support to Ralink 3290.
+
+[Service]
+Type=simple
+ExecStart=/opt/ralink/rtbth
+
+[Install]
+WantedBy=multi-user.target

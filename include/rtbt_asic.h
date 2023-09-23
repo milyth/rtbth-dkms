@@ -32,28 +32,19 @@
 //struct rtbt_dev_ctrl;
 struct _RTBTH_ADAPTER; //sean wang linux
 
-VOID RtbtReadModemRegister(
-	struct _RTBTH_ADAPTER *pAd,//sean wang linux 
-	UCHAR		  BbpID,
-	PUCHAR   	  pValue);
+VOID RtbtReadModemRegister(struct _RTBTH_ADAPTER *pAd, //sean wang linux
+			   UCHAR BbpID, PUCHAR pValue);
 
-VOID RtbtWriteModemRegister(
-	struct _RTBTH_ADAPTER *pAd,//sean wang linux
-	UCHAR		  BbpID,
-	UCHAR		  Value);
+VOID RtbtWriteModemRegister(struct _RTBTH_ADAPTER *pAd, //sean wang linux
+			    UCHAR BbpID, UCHAR Value);
 
-VOID BthDmaCfg(
-	struct _RTBTH_ADAPTER *pAd, //sean wang linux
-	ULONG DmaCfgMode);
+VOID BthDmaCfg(struct _RTBTH_ADAPTER *pAd, //sean wang linux
+	       ULONG DmaCfgMode);
 
-VOID BthDisableBtFunc(
-	struct _RTBTH_ADAPTER *pAd);//sean wang linux
+VOID BthDisableBtFunc(struct _RTBTH_ADAPTER *pAd); //sean wang linux
 
-VOID BthEnableBtFunc(
-	struct _RTBTH_ADAPTER *pAd);//sean wang linux
+VOID BthEnableBtFunc(struct _RTBTH_ADAPTER *pAd); //sean wang linux
 
-VOID BthInitializeAsic(IN 
-	struct _RTBTH_ADAPTER *pAd);//sean wang linux
+VOID BthInitializeAsic(IN struct _RTBTH_ADAPTER *pAd); //sean wang linux
 
 #endif // _RTBT_ASIC_H_ //
-

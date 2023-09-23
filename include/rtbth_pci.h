@@ -27,7 +27,6 @@
 #ifndef __RTBTH_PCI_H
 #define __RTBTH_PCI_H
 
-
 #include "rtbt_type.h"
 
 struct rtbt_dev_entry;
@@ -38,23 +37,16 @@ void RT_PCI_IO_WRITE32(ULONG addr, UINT32 val);
 int RtmpOSIRQRequest(IN void *if_dev, void *dev_id);
 int RtmpOSIRQRelease(IN void *if_dev, void *dev_id);
 
-int rtbt_dma_mem_alloc(
-	IN void *if_dev,
-	IN unsigned long Length,
-	IN unsigned char Cached,
-	OUT void **VirtualAddress,
-	OUT	PHYSICAL_ADDRESS *PhysicalAddress);
+int rtbt_dma_mem_alloc(IN void *if_dev, IN unsigned long Length,
+		       IN unsigned char Cached, OUT void **VirtualAddress,
+		       OUT PHYSICAL_ADDRESS *PhysicalAddress);
 
-void rtbt_dma_mem_free(
-	IN void *if_dev,
-	IN unsigned long Length,
-	IN void *VirtualAddress,
-	IN PHYSICAL_ADDRESS PhysicalAddress);
+void rtbt_dma_mem_free(IN void *if_dev, IN unsigned long Length,
+		       IN void *VirtualAddress,
+		       IN PHYSICAL_ADDRESS PhysicalAddress);
 
-int rtbt_iface_pci_hook(
-	struct rtbt_dev_entry *pIdTb);
+int rtbt_iface_pci_hook(struct rtbt_dev_entry *pIdTb);
 
-int rtbt_iface_pci_unhook(
-	struct rtbt_dev_entry *pIdTb);
+int rtbt_iface_pci_unhook(struct rtbt_dev_entry *pIdTb);
 
 #endif // __RTBTH_PCI_H //

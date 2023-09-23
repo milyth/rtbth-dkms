@@ -24,8 +24,8 @@
 *                                                                       *
 *************************************************************************/
 
-#include "rtbth_dbg.h"
 #include "include/rt_linux.h"
+#include "rtbth_dbg.h"
 
 //
 // Global debug error level
@@ -33,23 +33,19 @@
 unsigned long DebugLevel = ERROR;
 unsigned long DebugFlag = 0xFFFFFFFF;
 
-void DebugPrint(
-    unsigned long DebugPrintLevel,
-    unsigned long DebugPrintFlag,
-    unsigned char *DebugMessage,
-    ...
-    )
+void DebugPrint(unsigned long DebugPrintLevel, unsigned long DebugPrintFlag,
+		unsigned char *DebugMessage, ...)
 {
 #ifdef DBG
-	va_list    args;
+	va_list args;
 
 	va_start(args, DebugMessage);
 	if (DebugMessage) {
-		//if ((DebugPrintLevel <= INFO) || 
-		//	((DebugPrintLevel <= DebugLevel) && 
+		// if ((DebugPrintLevel <= INFO) ||
+		//	((DebugPrintLevel <= DebugLevel) &&
 		//	  ((DebugPrintFlag & DebugFlag) == DebugPrintFlag))
 		//)
-        if(DebugPrintLevel <= DebugLevel)
+		if (DebugPrintLevel <= DebugLevel)
 			vprintk(DebugMessage, args);
 	}
 	va_end(args);
@@ -61,19 +57,18 @@ void DebugPrint(
 int hex_dump(char *title, char *dumpBuf, int len)
 {
 	int i;
-	
+
 	printk("%s(addr=0x%p, len=%d)!\n", title, dumpBuf, len);
 
 	if (dumpBuf && len) {
-		for(i = 0 ; i < len; i++){
+		for (i = 0; i < len; i++) {
 			if ((i != 0) && (i % 16 == 0))
 				printk("\n");
-			printk("%02x ", dumpBuf[i]& 0xff);
-			if (i == (len -1))
+			printk("%02x ", dumpBuf[i] & 0xff);
+			if (i == (len - 1))
 				printk("\n");
 		}
 	}
-	
+
 	return 0;
 }
-

@@ -36,7 +36,7 @@
 #include <linux/string.h>
 #include <linux/spinlock.h>
 #include <linux/wait.h>
-#include <asm/delay.h>		// for udelay()
+#include <asm/delay.h> // for udelay()
 #include <linux/device.h>
 #include <linux/interrupt.h>
 #include <linux/slab.h>
@@ -59,7 +59,7 @@
 #include <linux/delay.h>
 #include <linux/capability.h>
 
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,26)
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 26)
 #include <linux/semaphore.h>
 #endif
 #ifdef KTHREAD_SUPPORT
@@ -73,8 +73,6 @@
 
 #include "rtbt_osabl.h"
 
-
-
 /***********************************************************************************
  *	OS semaphore/event related data structure and definitions
  *  For the eventing subsystem, we can seperate the operations as following parts
@@ -83,161 +81,144 @@
  *		3. Get event and handle it then clear it as un-signaled state
  *		4. Destroy of the event instance
  ***********************************************************************************/
-typedef struct semaphore	RTMP_OS_SEM;
+typedef struct semaphore RTMP_OS_SEM;
 
-
-#define RTMP_SEM_EVENT_INIT_LOCKED(_pSema) 	sema_init((_pSema), 0)
-#define RTMP_SEM_EVENT_INIT(_pSema)			sema_init((_pSema), 1)
-#define RTMP_SEM_EVENT_DESTORY(_pSema)		do{}while(0)
-#define RTMP_SEM_EVENT_WAIT(_pSema, _status)	((_status) = down_interruptible((_pSema)))
-#define RTMP_SEM_EVENT_UP(_pSema)			up(_pSema)
+#define RTMP_SEM_EVENT_INIT_LOCKED(_pSema) sema_init((_pSema), 0)
+#define RTMP_SEM_EVENT_INIT(_pSema) sema_init((_pSema), 1)
+#define RTMP_SEM_EVENT_DESTORY(_pSema) \
+	do {                           \
+	} while (0)
+#define RTMP_SEM_EVENT_WAIT(_pSema, _status) \
+	((_status) = down_interruptible((_pSema)))
+#define RTMP_SEM_EVENT_UP(_pSema) up(_pSema)
 
 #ifdef KTHREAD_SUPPORT
-#define RTMP_WAIT_EVENT_INTERRUPTIBLE(_pAd, _pTask) \
-{ \
-		wait_event_interruptible(_pTask->kthread_q, \
-								 _pTask->kthread_running || kthread_should_stop()); \
-		_pTask->kthread_running = FALSE; \
-		if (kthread_should_stop()) \
-		{ \
+#define RTMP_WAIT_EVENT_INTERRUPTIBLE(_pAd, _pTask)                          \
+	{                                                                    \
+		wait_event_interruptible(_pTask->kthread_q,                  \
+					 _pTask->kthread_running ||          \
+						 kthread_should_stop());     \
+		_pTask->kthread_running = FALSE;                             \
+		if (kthread_should_stop()) {                                 \
 			RTMP_SET_FLAG(_pAd, fRTMP_ADAPTER_HALT_IN_PROGRESS); \
-			break; \
-		} \
-}
+			break;                                               \
+		}                                                            \
+	}
 #endif
 
 #ifdef KTHREAD_SUPPORT
-#define WAKE_UP(_pTask) \
-	do{ \
-		if ((_pTask)->kthread_task) \
-        { \
+#define WAKE_UP(_pTask)                                   \
+	do {                                              \
+		if ((_pTask)->kthread_task) {             \
 			(_pTask)->kthread_running = TRUE; \
-	        wake_up(&(_pTask)->kthread_q); \
-		} \
-	}while(0)
+			wake_up(&(_pTask)->kthread_q);    \
+		}                                         \
+	} while (0)
 #endif
-
-
 
 /***********************************************************************************
  *	OS task related data structure and definitions
  ***********************************************************************************/
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,27)
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 27)
 /* definitions for newest kernel version */
-typedef	struct pid *	RTMP_OS_PID;
-typedef	struct pid *	THREAD_PID;
+typedef struct pid *RTMP_OS_PID;
+typedef struct pid *THREAD_PID;
 
-#define	THREAD_PID_INIT_VALUE	NULL
+#define THREAD_PID_INIT_VALUE NULL
 
 // TODO: Use this IOCTL carefully when linux kernel version larger than 2.6.27, because the PID only correct when the user space task do this ioctl itself.
 //#define RTMP_GET_OS_PID(_x, _y)    _x = get_task_pid(current, PIDTYPE_PID);
-#define RTMP_GET_OS_PID(_x, _y)		do{rcu_read_lock(); _x=current->pids[PIDTYPE_PID].pid; rcu_read_unlock();}while(0)
-#define	GET_PID_NUMBER(_v)	pid_nr((_v))
-#define IS_VALID_PID(_pid)	(pid_nr((_pid)) > 0)
-#define KILL_THREAD_PID(_A, _B, _C)	kill_pid((_A), (_B), (_C))
+#define RTMP_GET_OS_PID(_x, _y)                      \
+	do {                                         \
+		rcu_read_lock();                     \
+		_x = current->pids[PIDTYPE_PID].pid; \
+		rcu_read_unlock();                   \
+	} while (0)
+#define GET_PID_NUMBER(_v) pid_nr((_v))
+#define IS_VALID_PID(_pid) (pid_nr((_pid)) > 0)
+#define KILL_THREAD_PID(_A, _B, _C) kill_pid((_A), (_B), (_C))
 
 #else
 /* definitions for older kernel version */
 typedef pid_t RTMP_OS_PID;
-typedef	pid_t THREAD_PID;
+typedef pid_t THREAD_PID;
 
-#define	THREAD_PID_INIT_VALUE	-1
-#define RTMP_GET_OS_PID(_x, _pid)		_x = _pid
-#define	GET_PID_NUMBER(_v)	(_v)
-#define IS_VALID_PID(_pid)	((_pid) >= 0)
-#define KILL_THREAD_PID(_A, _B, _C)	kill_proc((_A), (_B), (_C))
+#define THREAD_PID_INIT_VALUE -1
+#define RTMP_GET_OS_PID(_x, _pid) _x = _pid
+#define GET_PID_NUMBER(_v) (_v)
+#define IS_VALID_PID(_pid) ((_pid) >= 0)
+#define KILL_THREAD_PID(_A, _B, _C) kill_proc((_A), (_B), (_C))
 
 #endif // LINUX_VERSION_CODE //
 
+#define RTBT_OS_MGMT_TASK_FLAGS CLONE_VM
 
-#define RTBT_OS_MGMT_TASK_FLAGS	CLONE_VM
+#define RTBT_TASK_CAN_DO_INSERT (RTBT_TASK_STAT_INITED | RTBT_TASK_STAT_RUNNING)
 
-#define RTBT_TASK_CAN_DO_INSERT		(RTBT_TASK_STAT_INITED |RTBT_TASK_STAT_RUNNING)
-
-typedef enum{
+typedef enum {
 	RTBT_TASK_STAT_UNKNOWN = 0,
 	RTBT_TASK_STAT_INITED = 1,
 	RTBT_TASK_STAT_RUNNING = 2,
 	RTBT_TASK_STAT_STOPED = 4,
-}RTBT_TASK_STATUS;
+} RTBT_TASK_STATUS;
 
+#define RTBT_OS_TASK_NAME_LEN 16
 
-#define RTBT_OS_TASK_NAME_LEN	16
-
-
-typedef struct _RTBT_OS_TASK_
-{
+typedef struct _RTBT_OS_TASK_ {
 #ifdef KTHREAD_SUPPORT
-	struct task_struct 	*kthread_task;
-	wait_queue_head_t	 kthread_q;
-	BOOLEAN	 kthread_running;
+	struct task_struct *kthread_task;
+	wait_queue_head_t kthread_q;
+	BOOLEAN kthread_running;
 #else
 	struct semaphore taskSema;
-	struct completion	taskComplete;
-	RTMP_OS_PID	 taskPID;
+	struct completion taskComplete;
+	RTMP_OS_PID taskPID;
 #endif
 
 	char taskName[RTBT_OS_TASK_NAME_LEN];
 	void *priv;
 	RTBT_TASK_STATUS taskStatus;
 	RTBT_OS_TASK_CALLBACK taskEntry;
-	unsigned char			task_killed;
+	unsigned char task_killed;
 	int refCnt;
-}RTBT_OS_TASK;
-
-
+} RTBT_OS_TASK;
 
 /***********************************************************************************
  *	OS file operation related data structure definitions
  ***********************************************************************************/
-typedef struct file* RTMP_OS_FD;
+typedef struct file *RTMP_OS_FD;
 
-typedef struct _RTMP_OS_FS_INFO_
-{
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0)
-	kuid_t			fsuid;
-	kgid_t			fsgid;
+typedef struct _RTMP_OS_FS_INFO_ {
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3, 5, 0)
+	kuid_t fsuid;
+	kgid_t fsgid;
 #else
-	int				fsuid;
-	int				fsgid;
+	int fsuid;
+	int fsgid;
 #endif
 
-#if LINUX_VERSION_CODE < KERNEL_VERSION(5,18,0)
-	mm_segment_t	fs;
+#if LINUX_VERSION_CODE < KERNEL_VERSION(5, 18, 0)
+	mm_segment_t fs;
 #endif
-}RTMP_OS_FS_INFO;
+} RTMP_OS_FS_INFO;
 
-#define IS_FILE_OPEN_ERR(_fd) 	IS_ERR((_fd))
+#define IS_FILE_OPEN_ERR(_fd) IS_ERR((_fd))
 
+typedef struct _RT_OS_LOCK {
+} RT_OS_LOCK;
 
+typedef struct _RT_OS_THREAD {
+} RT_OS_THREAD;
 
-typedef struct _RT_OS_LOCK{
+typedef struct _RT_OS_EVENT {
+} RT_OS_EVENT;
 
+typedef struct _RT_OS_TASK {
+} RT_OS_TASK;
 
-}RT_OS_LOCK;
+typedef struct _RT_OS_FILE {
+} RT_OS_FILE;
 
-
-typedef struct _RT_OS_THREAD{
-
-
-}RT_OS_THREAD;
-
-
-typedef struct _RT_OS_EVENT{
-
-}RT_OS_EVENT;
-
-
-typedef struct _RT_OS_TASK{
-
-}RT_OS_TASK;
-
-
-typedef struct _RT_OS_FILE{
-
-}RT_OS_FILE;
-
-#define IRQ_HANDLE_TYPE  irqreturn_t
+#define IRQ_HANDLE_TYPE irqreturn_t
 
 #endif // __RTBT_LINUX_H //
-

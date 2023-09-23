@@ -26,11 +26,11 @@ all:
 clean:
 	$(MAKE) -C $(LINUX_SRC) M=$(PWD) clean
 
+modules_install:
+	$(MAKE) INSTALL_MOD_PATH=$(DESTDIR) INSTALL_MOD_DIR=$(MDIR) \
+			-C $(LINUX_SRC) M=$(PWD) modules_install
+
 install:
-	#$(MAKE) INSTALL_MOD_PATH=$(DESTDIR) INSTALL_MOD_DIR=$(MDIR) \
-	#	-C $(LINUX_SRC) M=$(PWD) modules_install
-	#depmod -a
-	## uncomment the three lines above if you wanna use `make install` instead of dkms
-	install -m 0755 -o root -g root tools/49rtbt $(DESTDIR)/usr/lib/pm-utils/sleep.d/
-	install -m 0755 -o root -g root tools/rtbt $(DESTDIR)/usr/bin/
-	install -m 0644 -o root -g root tools/ralink-bt.conf $(DESTDIR)/etc/modprobe.d/
+	install -m 0755 -o root -g root tools/rtbt -D $(DESTDIR)/opt/ralink/rtbt # Firmware loader
+	install -m 0755 -o root -g root tools/rtbth -D $(DESTDIR)/opt/ralink/rtbth  # Helper script
+	install -m 0644 -o root -g root systemd/rtbth.service -D $(DESTDIR)/usr/local/lib/systemd/system/rtbth.service  # Systemd service

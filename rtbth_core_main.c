@@ -24,17 +24,15 @@
 *                                                                       *
 *************************************************************************/
 
-#include <linux/init.h>
-#include <linux/module.h>
 #include "include/rtbth_dbg.h"
+#include "rtbt_ctrl.h"
 #include "rtbt_osabl.h"
 #include "rtbth_3298.h"
-#include "rtbt_ctrl.h"
-#include <linux/fs.h>
-#include <linux/kdev_t.h>
 #include <linux/device.h>
-
-static struct class *deviceClass;
+#include <linux/fs.h>
+#include <linux/init.h>
+#include <linux/kdev_t.h>
+#include <linux/module.h>
 
 #define VERSION "4.0.0"
 
@@ -43,6 +41,7 @@ MODULE_DESCRIPTION("Support for Ralink Bluetooth RT3290 Cards");
 MODULE_LICENSE("GPL");
 MODULE_VERSION(VERSION);
 
+static struct class *deviceClass;
 static dev_t mainDevice = 0;
 
 static struct rtbt_dev_entry *rtbt_pci_dev_list = NULL;
@@ -56,23 +55,14 @@ static int __init rtbth_init(void)
 #ifdef RT3298
 	ent = rtbt_3298_init();
 #endif // RT3298 //
-	
-	
-	// if (alloc_chrdev_region(&mainDevice, MKDEV(192, 0),0, "rtcore") < 0)
-	// {
-	// 	pr_err("Unable to allocate character device for rtusb.");
-	// 	return -1;
-	// }
 
-
-	if (ent)
-	{
+	if (ent) {
 		rtbt_pci_dev_list = ent;
 		ral_os_register(rtbt_pci_dev_list);
 	}
-		mainDevice = MKDEV(192, 0);
-	register_chrdev_region(mainDevice, 1, "rtBth");
 
+	mainDevice = MKDEV(192, 0);
+	register_chrdev_region(mainDevice, 1, "rtBth");
 
 	deviceClass = class_create("RtClass");
 	if (IS_ERR(deviceClass)) {
@@ -80,8 +70,8 @@ static int __init rtbth_init(void)
 		goto byeClass;
 	}
 
-	if(IS_ERR(device_create(deviceClass, NULL, mainDevice, NULL, "rtbth")))
-	{
+	if (IS_ERR(device_create(deviceClass, NULL, mainDevice, NULL,
+				 "rtbth"))) {
 		pr_err("Unable to create rtbth device!");
 		goto byeDevice;
 	}
@@ -103,10 +93,9 @@ static void __exit rtbth_exit(void)
 #ifdef RT3298
 	rtbt_3298_exit();
 #endif // RT3298 //
-      	device_destroy(deviceClass,mainDevice);
+	device_destroy(deviceClass, mainDevice);
 	class_destroy(deviceClass);
 	unregister_chrdev_region(mainDevice, 1);
-
 
 	DebugPrint(TRACE, DBG_INIT, "<---%s()\n", __FUNCTION__);
 }

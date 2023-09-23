@@ -35,4 +35,3 @@ struct rtbt_dev_entry *rtbt_3298_init(void);
 int rtbt_3298_exit(void);
 
 #endif
-

@@ -31,15 +31,10 @@
 
 struct _RTBTH_ADAPTER;
 
-NTSTATUS BthWriteRFRegister(
-	IN struct _RTBTH_ADAPTER	*pAd,
-	IN UCHAR			RfID,
-	IN UCHAR			Value);
+NTSTATUS BthWriteRFRegister(IN struct _RTBTH_ADAPTER *pAd, IN UCHAR RfID,
+			    IN UCHAR Value);
 
-NTSTATUS BthReadRFRegister(
-	IN struct _RTBTH_ADAPTER	*pAd,
-	IN UCHAR			RfID,
-	IN PUCHAR			pValue);
+NTSTATUS BthReadRFRegister(IN struct _RTBTH_ADAPTER *pAd, IN UCHAR RfID,
+			   IN PUCHAR pValue);
 
 #endif // _RTBT_RF_H_ //
-

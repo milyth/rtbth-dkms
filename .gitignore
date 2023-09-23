@@ -1,5 +1,6 @@
 .kdev*
 *.o
+*.o.d
 *.cmd
 *.mod
 *.mod.*

@@ -31,7 +31,7 @@
 
 #include <linux/version.h>
 
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(5,15,0)
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 15, 0)
 #include <linux/stdarg.h>
 #else
 #include <stdarg.h>
@@ -39,27 +39,27 @@
 
 #endif // __GNUC__ //
 
-typedef signed char		INT8;
-typedef unsigned char		UINT8;
-typedef signed short		INT16;
-typedef unsigned short		UINT16;
-typedef signed int			INT32;
-typedef unsigned int		UINT32;
-typedef signed long long	INT64;
-typedef unsigned long long	UINT64;
+typedef signed char INT8;
+typedef unsigned char UINT8;
+typedef signed short INT16;
+typedef unsigned short UINT16;
+typedef signed int INT32;
+typedef unsigned int UINT32;
+typedef signed long long INT64;
+typedef unsigned long long UINT64;
 
-typedef int				INT;
-typedef unsigned int		UINT;
-typedef unsigned char		BOOLEAN;
-typedef long				LONG;
-typedef unsigned long		ULONG;
-typedef unsigned long		*PULONG;
+typedef int INT;
+typedef unsigned int UINT;
+typedef unsigned char BOOLEAN;
+typedef long LONG;
+typedef unsigned long ULONG;
+typedef unsigned long *PULONG;
 
-typedef signed long long	DOUBLE;
-typedef long long			LONGLONG;
+typedef signed long long DOUBLE;
+typedef long long LONGLONG;
 
-typedef void			VOID;
-typedef void 			*PVOID;
+typedef void VOID;
+typedef void *PVOID;
 
 typedef char CHAR;
 typedef char *PCHAR;
@@ -75,17 +75,15 @@ typedef void *TYPE;
 
 typedef unsigned long PHYSICAL_ADDRESS;
 
-
-
 #ifdef TRUE
 #undef TRUE
 #endif
-#define TRUE		1
+#define TRUE 1
 
 #ifdef FALSE
 #undef FALSE
 #endif
-#define FALSE		0
+#define FALSE 0
 
 #ifdef IN
 #undef IN
@@ -111,13 +109,12 @@ typedef unsigned long PHYSICAL_ADDRESS;
 #ifdef FORCEINLINE
 #undef FORCEINLINE
 #endif
-#define FORCEINLINE 	static inline __attribute__((always_inline))
+#define FORCEINLINE static inline __attribute__((always_inline))
 #endif // __GNUC__ //
 
 #ifndef NULL
-#define NULL (void *) 0
+#define NULL (void *)0
 #endif
-
 
 /* A structure including bit-fields will be covered with a union syntax. An
  * unsigned integer of equal-length will be allocated to a mutual space of this
@@ -126,26 +123,23 @@ typedef unsigned long PHYSICAL_ADDRESS;
  * the need of regular data size. Therefore, only 8,16 and 32-bits are preferred
  * and accepted. The unsigned integer allocated to the mutual space of structure
  * will be named Overall8(16 or 32). */
-#define Overall32(_a_union_)        ((_a_union_).word)
-#define Overall16(_a_union_)        ((_a_union_).Overall16)
-#define Overall8(_a_union_)         ((_a_union_).Overall8)
-
-
+#define Overall32(_a_union_) ((_a_union_).word)
+#define Overall16(_a_union_) ((_a_union_).Overall16)
+#define Overall8(_a_union_) ((_a_union_).Overall8)
 
 /*
 	Work-around for windows definitions
 */
 typedef int NTSTATUS;
 
-#define STATUS_SUCCESS 						0
-#define STATUS_FAILURE 						-1
-#define STATUS_UNSUCCESSFUL 				-1
-#define STATUS_INSUFFICIENT_RESOURCES 	-2
-#define STATUS_TIMEOUT						-3
-#define STATUS_CANCELLED					-4
-#define STATUS_INVALID_PARAMETER 			-5
-#define STATUS_INVALID_DEVICE_STATE 		-6
-
+#define STATUS_SUCCESS 0
+#define STATUS_FAILURE -1
+#define STATUS_UNSUCCESSFUL -1
+#define STATUS_INSUFFICIENT_RESOURCES -2
+#define STATUS_TIMEOUT -3
+#define STATUS_CANCELLED -4
+#define STATUS_INVALID_PARAMETER -5
+#define STATUS_INVALID_DEVICE_STATE -6
 
 /*
 	Following code used to work-around to make compiler fun
@@ -154,18 +148,17 @@ typedef int NTSTATUS;
 typedef int NDIS_STATUS;
 typedef int HANDLE;
 
-
 /*
 	Following definitions are used to wrap for compile fun
 */
 #ifdef __GNUC__
-#define GNUC_PACKED    __attribute__ ((packed))
+#define GNUC_PACKED __attribute__((packed))
 #else
 #define GNUC_PACKED
 #endif
 
 #ifdef __arm
-#define ARM_PACKED    __packed
+#define ARM_PACKED __packed
 #else
 #define ARM_PACKED
 #endif
@@ -184,47 +177,53 @@ typedef union _LARGE_INTEGER {
 	ULONG QuadPart;
 } LARGE_INTEGER, *PLARGE_INTEGER;
 
-typedef struct  _REG_PAIR
-{
-	UCHAR   Register;
-	UCHAR   Value;
-	UCHAR   EEPROM;		//The EEPROM addr for updaing the registers
+typedef struct _REG_PAIR {
+	UCHAR Register;
+	UCHAR Value;
+	UCHAR EEPROM; //The EEPROM addr for updaing the registers
 } REG_PAIR, *PREG_PAIR;
 
-
 #define UNREFERENCED_PARAMETER(_p) (void)(_p)
-#define FIELD_OFFSET(_type, _field)	((ULONG)&((_type *)0)->_field)
+#define FIELD_OFFSET(_type, _field) ((ULONG) & ((_type *)0)->_field)
 
 typedef struct _LIST_ENTRY {
-  struct _LIST_ENTRY *Flink;
-  struct _LIST_ENTRY *Blink;
+	struct _LIST_ENTRY *Flink;
+	struct _LIST_ENTRY *Blink;
 } LIST_ENTRY, *PLIST_ENTRY;
 
-
 #ifndef CONTAINING_RECORD
-#define CONTAINING_RECORD(_ptr, _type, _field)	\
-	((_type *)( (PCHAR)(_ptr) - (ULONG)(&((_type*)0)->_field)))
+#define CONTAINING_RECORD(_ptr, _type, _field) \
+	((_type *)((PCHAR)(_ptr) - (ULONG)(&((_type *)0)->_field)))
 #endif
 
-#define RTL_SOFT_ASSERT(expr)	
+#define RTL_SOFT_ASSERT(expr)
 #if DBG
 #ifdef ASSERT_BREAK
 #define RTBT_ASSERT(expr)                                     \
-    if(!(expr))                                          \
-    {                                                    \
-        DebugPrint(FATAL, DBG_MISC, "ASSERT failed at line %d in %s\n"      \
-                  "\"" #expr "\"\n", __LINE__, __FILE__);\
-    }
+	if (!(expr)) {                                        \
+		DebugPrint(FATAL, DBG_MISC,                   \
+			   "ASSERT failed at line %d in %s\n" \
+			   "\"" #expr "\"\n",                 \
+			   __LINE__, __FILE__);               \
+	}
 #else
-#define RTBT_ASSERT(expr)       RTL_SOFT_ASSERT(expr)
+#define RTBT_ASSERT(expr) RTL_SOFT_ASSERT(expr)
 #endif /* ASSERT_BREAK */
 
 #else
 
-#define RTBT_ASSERT(_X)	do{}while(0)
+#define RTBT_ASSERT(_X) \
+	do {            \
+	} while (0)
 #endif /* DBG */
 
-#define ASSERT					RTBT_ASSERT
+#define ASSERT RTBT_ASSERT
+
+#define RtlAssert(x)                                         \
+	if (!(x)) {                                          \
+		pr_err("RtlAssert failed at line %d in %s\n" \
+		       "\"" #x "\"\n",                       \
+		       __LINE__, __FILE__);                  \
+	}
 
 #endif // __RTBT_TYPE_H //
-

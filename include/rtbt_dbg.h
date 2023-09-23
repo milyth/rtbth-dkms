@@ -38,4 +38,3 @@ VOID Bth_Dbg_DumpBuffer(
 	IN VOID 	(*pOutPutFn)(UINT32, const CHAR *, const CHAR *, PVOID));
 */
 #endif // _RTBT_DBG_H_ //
-

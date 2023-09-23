@@ -27,23 +27,19 @@
 #ifndef __RTBTH_DBG_H
 #define __RTBTH_DBG_H
 
-#define     NONE       0 //  Tracing is not on
-#define     FATAL      1 // Abnormal exit or termination
-#define     ERROR      2 // Severe errors that need logging
-#define     WARNING    3 // Warnings such as allocation failure
-#define     INFO       4 // Includes non-error cases such as Entry-Exit
-#define     TRACE      5 // Detailed traces from intermediate steps
-#define     LOUD       6 // Detailed trace from every step
-#define     NOISY      7 // Raw data
+#define NONE 0 //  Tracing is not on
+#define FATAL 1 // Abnormal exit or termination
+#define ERROR 2 // Severe errors that need logging
+#define WARNING 3 // Warnings such as allocation failure
+#define INFO 4 // Includes non-error cases such as Entry-Exit
+#define TRACE 5 // Detailed traces from intermediate steps
+#define LOUD 6 // Detailed trace from every step
+#define NOISY 7 // Raw data
 
-#define DBG_INIT        0x00000001
+#define DBG_INIT 0x00000001
 
-void DebugPrint(
-    unsigned long level,
-    unsigned long flag,
-    unsigned char *msg,
-    ...
-    );
+void DebugPrint(unsigned long level, unsigned long flag, unsigned char *msg,
+		...);
 
 int hex_dump(char *title, char *dumpBuf, int len);
 

@@ -33,42 +33,38 @@
 struct _RTBTH_ADAPTER; //sean wang linux
 
 // TODO: shiang, it's little weired to put this marco here!
-#define DECLARE_TIMER_FUNCTION(_func)			\
+#define DECLARE_TIMER_FUNCTION(_func) \
 	void rtmp_timer_##_func(unsigned long data)
 
-#define GET_TIMER_FUNCTION(_func)				\
-	(ULONG)rtmp_timer_##_func
-	
-#define BUILD_TIMER_FUNCTION(_func)	 \
-void rtmp_timer_##_func(unsigned long data)			\
-{												\
-	KTIMER *_timer = (KTIMER *)data;				\
-	KDPC *_dpc;\
-	if (_timer) { \
-		_dpc = &_timer->dpc;	\
-		if(_dpc->func)	{\
-			_dpc->func(NULL, (PVOID)(_dpc->data), NULL, _timer); 	\
-			return;\
-		}\
-	}\
-	else \
-		DebugPrint(ERROR, DBG_MISC, "%s():the timer function is NULL!\n", __FUNCTION__);\
-}
+#define GET_TIMER_FUNCTION(_func) (ULONG) rtmp_timer_##_func
 
+#define BUILD_TIMER_FUNCTION(_func)                                         \
+	void rtmp_timer_##_func(unsigned long data)                         \
+	{                                                                   \
+		KTIMER *_timer = (KTIMER *)data;                            \
+		KDPC *_dpc;                                                 \
+		if (_timer) {                                               \
+			_dpc = &_timer->dpc;                                \
+			if (_dpc->func) {                                   \
+				_dpc->func(NULL, (PVOID)(_dpc->data), NULL, \
+					   _timer);                         \
+				return;                                     \
+			}                                                   \
+		} else                                                      \
+			DebugPrint(ERROR, DBG_MISC,                         \
+				   "%s():the timer function is NULL!\n",    \
+				   __FUNCTION__);                           \
+	}
 
 DECLARE_TIMER_FUNCTION(RtbtCoreIdleTimerFunc);
 
-VOID RtbtCoreIdleTimerFunc(
-    PKDPC    SystemSpecific1,
-    PVOID    FunctionContext,
-    PVOID    SystemSpecific2,
-    PVOID    SystemSpecific3);
+VOID RtbtCoreIdleTimerFunc(PKDPC SystemSpecific1, PVOID FunctionContext,
+			   PVOID SystemSpecific2, PVOID SystemSpecific3);
 
-VOID RtbtPostCoreEvent(struct _RTBTH_ADAPTER *pAd);//sean wang linux
+VOID RtbtPostCoreEvent(struct _RTBTH_ADAPTER *pAd); //sean wang linux
 
-NTSTATUS RtbtStartCore(struct _RTBTH_ADAPTER *pAd);//sean wang linux
-VOID RtbtStopCore(struct _RTBTH_ADAPTER *pAd);//sean wang linux
+NTSTATUS RtbtStartCore(struct _RTBTH_ADAPTER *pAd); //sean wang linux
+VOID RtbtStopCore(struct _RTBTH_ADAPTER *pAd); //sean wang linux
 VOID RtbtTerminateCoreThread(struct _RTBTH_ADAPTER *pAd); //sean wang linux
 
 #endif // _RTBT_THREAD_H_ //
-
