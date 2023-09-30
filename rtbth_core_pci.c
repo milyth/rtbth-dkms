@@ -279,7 +279,7 @@ static void rtbt_pci_remove(struct pci_dev *pdev)
 }
 
 static struct pci_driver rtbt_pci_driver = {
-	.name = "rtbt",
+	.name = "rtbth",
 #ifndef OS_ABL_SUPPORT
 	.id_table = rtbt_pci_ids,
 #endif /* OS_ABL_SUPPORT */
