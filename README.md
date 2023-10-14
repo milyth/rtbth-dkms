@@ -10,7 +10,7 @@ This module has no official support by Mediatek. Support was discontinued.
 
 ### Building and installing ###
 ```sh
-sudo git clone https://github.com/milyth/rtbth-dkms.git /usr/src/rtbth-4.0.0
+sudo git clone https://github.com/ry-diffusion/rtbth-ralink-3290-linux-dkms.git /usr/src/rtbth-4.0.0
 sudo dkms add rtbth/4.0.0
 sudo dkms build rtbth/4.0.0
 sudo dkms install rtbth/4.0.0

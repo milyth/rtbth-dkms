@@ -29,6 +29,7 @@
 #include "rtbt_osabl.h"
 #include "rtbth_3298.h"
 #include <linux/device.h>
+#include <linux/device/class.h>
 #include <linux/fs.h>
 #include <linux/init.h>
 #include <linux/kdev_t.h>
@@ -36,7 +37,7 @@
 
 #define VERSION "4.0.0"
 
-MODULE_AUTHOR("Ralink Tech & Mily.");
+MODULE_AUTHOR("Ralink Tech & Ry.");
 MODULE_DESCRIPTION("Support for Ralink Bluetooth RT3290 Cards");
 MODULE_LICENSE("GPL");
 MODULE_VERSION(VERSION);
@@ -45,6 +46,14 @@ static struct class *deviceClass;
 static dev_t mainDevice = 0;
 
 static struct rtbt_dev_entry *rtbt_pci_dev_list = NULL;
+
+
+#if LINUX_VERSION_CODE < KERNEL_VERSION(6, 2, 0)
+#define KClassCreate(x) class_create(THIS_MODULE, x)
+#else
+#define KClassCreate class_create
+#endif
+
 
 static int __init rtbth_init(void)
 {
@@ -66,7 +75,7 @@ static int __init rtbth_init(void)
 	mainDevice = MKDEV(192, 0);
 	register_chrdev_region(mainDevice, 1, "rtBth");
 
-	deviceClass = class_create("RtClass");
+	deviceClass = KClassCreate("RtClass");
 	if (IS_ERR(deviceClass)) {
 		pr_err("Unable to allocate class for module");
 		goto byeClass;
