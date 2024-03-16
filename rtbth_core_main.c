@@ -35,9 +35,9 @@
 #include <linux/kdev_t.h>
 #include <linux/module.h>
 
-#define VERSION "4.0.0"
+#define VERSION "4.1.0"
 
-MODULE_AUTHOR("Ralink Tech & Ry.");
+MODULE_AUTHOR("Ralink Tech (FORK BY: Ryster Diffusion)");
 MODULE_DESCRIPTION("Support for Ralink Bluetooth RT3290 Cards");
 MODULE_LICENSE("GPL");
 MODULE_VERSION(VERSION);

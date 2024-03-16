@@ -6,3 +6,6 @@
 *.mod.*
 [m|M]odule*.*
 *.ko
+
+.cache
+compile_commands.json
