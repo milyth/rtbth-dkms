@@ -43,8 +43,7 @@ inline void DebugPrintImpl(unsigned long DebugPrintLevel,
     //	((DebugPrintLevel <= DebugLevel) &&
     //	  ((DebugPrintFlag & DebugFlag) == DebugPrintFlag))
     //)
-    //		if (DebugPrintLevel <= DebugLevel)
-    if (1) {
+    if (DebugPrintLevel <= DebugLevel) {
       // printk(KERN_SOH "%ld%s: ", DebugPrintLevel, KBUILD_MODNAME);
 
       vprintk(DebugMessage, args);
