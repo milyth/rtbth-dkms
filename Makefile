@@ -31,6 +31,6 @@ modules_install:
 			-C $(LINUX_SRC) M=$(PWD) modules_install
 
 install:
-	install -m 0755 -o root -g root tools/rtbt -D $(DESTDIR)/opt/ralink/rtbt # Firmware loader
-	install -m 0755 -o root -g root tools/rtbth -D $(DESTDIR)/opt/ralink/rtbth  # Helper script
+	install -m 0755 -o root -g root tools/rtbt-firmware-loader -D $(DESTDIR)/opt/ralink/rtbt-firmware-loader # Firmware loader
+	install -m 0755 -o root -g root tools/rtbth-wrapper -D $(DESTDIR)/opt/ralink/rtbth-wrapper # Helper script
 	install -m 0644 -o root -g root systemd/rtbth.service -D $(DESTDIR)/usr/local/lib/systemd/system/rtbth.service  # Systemd service

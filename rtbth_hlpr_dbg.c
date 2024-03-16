@@ -33,46 +33,43 @@
 unsigned long DebugLevel = INFO;
 unsigned long DebugFlag = 0xFFFFFFFF;
 
+inline void DebugPrintImpl(unsigned long DebugPrintLevel,
+                           unsigned long DebugPrintFlag,
+                           unsigned char *DebugMessage, ...) {
+  va_list args;
+  va_start(args, DebugMessage);
+  if (DebugMessage) {
+    // if ((DebugPrintLevel <= INFO) ||
+    //	((DebugPrintLevel <= DebugLevel) &&
+    //	  ((DebugPrintFlag & DebugFlag) == DebugPrintFlag))
+    //)
+    //		if (DebugPrintLevel <= DebugLevel)
+    if (1) {
+      // printk(KERN_SOH "%ld%s: ", DebugPrintLevel, KBUILD_MODNAME);
 
-inline void DebugPrintImpl(unsigned long DebugPrintLevel, unsigned long DebugPrintFlag,
-		unsigned char *DebugMessage, ...)
-{
-	va_list args;
-	va_start(args, DebugMessage);
-	if (DebugMessage) {
-		// if ((DebugPrintLevel <= INFO) ||
-		//	((DebugPrintLevel <= DebugLevel) &&
-		//	  ((DebugPrintFlag & DebugFlag) == DebugPrintFlag))
-		//)
-		if (DebugPrintLevel <= DebugLevel)
-		{
-			// printk(KERN_SOH "%ld%s: ", DebugPrintLevel, KBUILD_MODNAME);
-		
-			vprintk(DebugMessage, args);
-		}
-	}
+      vprintk(DebugMessage, args);
+    }
+  }
 
-	va_end(args);
-	if (DebugPrintLevel == FATAL)
-		dump_stack();
+  va_end(args);
+  if (DebugPrintLevel == FATAL)
+    dump_stack();
 }
 
+int hex_dump(char *title, char *dumpBuf, int len) {
+  int i;
 
-int hex_dump(char *title, char *dumpBuf, int len)
-{
-	int i;
+  printk("%s(addr=0x%p, len=%d)!\n", title, dumpBuf, len);
 
-	printk("%s(addr=0x%p, len=%d)!\n", title, dumpBuf, len);
+  if (dumpBuf && len) {
+    for (i = 0; i < len; i++) {
+      if ((i != 0) && (i % 16 == 0))
+        printk("\n");
+      printk("%02x ", dumpBuf[i] & 0xff);
+      if (i == (len - 1))
+        printk("\n");
+    }
+  }
 
-	if (dumpBuf && len) {
-		for (i = 0; i < len; i++) {
-			if ((i != 0) && (i % 16 == 0))
-				printk("\n");
-			printk("%02x ", dumpBuf[i] & 0xff);
-			if (i == (len - 1))
-				printk("\n");
-		}
-	}
-
-	return 0;
+  return 0;
 }

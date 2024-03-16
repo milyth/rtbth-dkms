@@ -1,0 +1,45 @@
+#!/usr/bin/env -S bash -eu
+pid=0
+
+bye() {
+	# Remove bluetooth support
+	echo $pid
+	kill -TERM $pid
+
+	while :; do
+		if ! pgrep -x rtbth; then
+			break
+		fi
+
+		sleep 0.5
+	done
+
+	modprobe -r rtbth
+}
+
+# Starts bluetooth device
+if command -v systemctl >/dev/null; then
+	if ! systemctl is-active bluetooth; then
+		systemctl start bluetooth
+	fi
+fi
+
+trap bye EXIT
+
+# Load bluetooth module
+echo "* removing old module"
+modprobe -r rtbth || echo " > not loaded."
+
+echo "* loading rtbth"
+modprobe rtbth
+
+# Load bluetooth firmware
+echo "* starting firmware loader"
+/opt/ralink/rtbt-firmware-loader &
+pid=$!
+
+# Make realtime!
+echo "* making realtime"
+chrt -f -p $pid
+renice -n -20 -p $pid
+wait

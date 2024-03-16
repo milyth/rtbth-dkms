@@ -43,10 +43,9 @@ MODULE_LICENSE("GPL");
 MODULE_VERSION(VERSION);
 
 static struct class *deviceClass;
-static dev_t mainDevice = 0;
+static dev_t kernelInterfaceDevice = 0;
 
 static struct rtbt_dev_entry *rtbt_pci_dev_list = NULL;
-
 
 #if LINUX_VERSION_CODE < KERNEL_VERSION(6, 2, 0)
 #define KClassCreate(x) class_create(THIS_MODULE, x)
@@ -54,61 +53,54 @@ static struct rtbt_dev_entry *rtbt_pci_dev_list = NULL;
 #define KClassCreate class_create
 #endif
 
+static int __init rtbth_init(void) {
+  struct rtbt_dev_entry *ent;
 
-static int __init rtbth_init(void)
-{
-	struct rtbt_dev_entry *ent;
-
-	DebugPrint(TRACE, DBG_INIT, "--->%s()\n", __FUNCTION__);
-	
+  DebugPrint(TRACE, DBG_INIT, "--->%s()\n", __FUNCTION__);
 
 #ifdef RT3298
-	ent = rtbt_3298_init();
+  ent = rtbt_3298_init();
 #endif // RT3298 //
 
-	if (ent) {
-		rtbt_pci_dev_list = ent;
-		ral_os_register(rtbt_pci_dev_list);
-	}
+  if (ent) {
+    rtbt_pci_dev_list = ent;
+    ral_os_register(rtbt_pci_dev_list);
+  }
 
-	
-	mainDevice = MKDEV(192, 0);
-	register_chrdev_region(mainDevice, 1, "rtBth");
+  kernelInterfaceDevice = MKDEV(192, 0);
+  // register_chrdev(mainDevice, "rtbth", NULL);
 
-	deviceClass = KClassCreate("RtClass");
-	if (IS_ERR(deviceClass)) {
-		pr_err("Unable to allocate class for module");
-		goto byeClass;
-	}
+  deviceClass = KClassCreate("ralink");
+  if (IS_ERR(deviceClass)) {
+    pr_err("Unable to allocate class for module");
+    goto byeClass;
+  }
 
-	if (IS_ERR(device_create(deviceClass, NULL, mainDevice, NULL,
-				 "rtbth"))) {
-		pr_err("Unable to create rtbth device!");
-		goto byeDevice;
-	}
-	
-	DebugPrint(TRACE, DBG_INIT, "<---%s()\n", __FUNCTION__);
-	return 0;
+  if (IS_ERR(device_create(deviceClass, NULL, kernelInterfaceDevice, NULL,
+                           "rtbth"))) {
+    pr_err("Unable to create rtbth device!");
+    goto byeDevice;
+  }
+
+  DebugPrint(TRACE, DBG_INIT, "<---%s()\n", __FUNCTION__);
+  return 0;
 byeDevice:
-	class_destroy(deviceClass);
+  class_destroy(deviceClass);
 byeClass:
-	unregister_chrdev_region(mainDevice, 1);
-	return -1;
+  return -1;
 }
 
-static void __exit rtbth_exit(void)
-{
-	DebugPrint(TRACE, DBG_INIT, "--->%s()\n", __FUNCTION__);
-	if (rtbt_pci_dev_list)
-		ral_os_unregister(rtbt_pci_dev_list);
+static void __exit rtbth_exit(void) {
+  DebugPrint(TRACE, DBG_INIT, "--->%s()\n", __FUNCTION__);
+  if (rtbt_pci_dev_list)
+    ral_os_unregister(rtbt_pci_dev_list);
 #ifdef RT3298
-	rtbt_3298_exit();
+  rtbt_3298_exit();
 #endif // RT3298 //
-	device_destroy(deviceClass, mainDevice);
-	class_destroy(deviceClass);
-	unregister_chrdev_region(mainDevice, 1);
+  device_destroy(deviceClass, kernelInterfaceDevice);
+  class_destroy(deviceClass);
 
-	DebugPrint(TRACE, DBG_INIT, "<---%s()\n", __FUNCTION__);
+  DebugPrint(TRACE, DBG_INIT, "<---%s()\n", __FUNCTION__);
 }
 
 module_init(rtbth_init);

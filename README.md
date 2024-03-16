@@ -1,25 +1,37 @@
+# rtbth-ralink-3290-linux-dkms
+
 This is a Linux kernel module for a Ralink RT3290 wireless device.
 It enables [Bluez](http://www.bluez.org) software and driver support for RT3290.
 
 This module has no official support by Mediatek. Support was discontinued.
 
-### Dependencies ### 
+## Dependencies
+
 - Kernel headers
 - DKMS
 - Make and a C compiler
 
-### Building and installing ###
+## Building and installing
+
 ```sh
-sudo git clone https://github.com/ry-diffusion/rtbth-ralink-3290-linux-dkms.git /usr/src/rtbth-4.0.0 && \
-sudo dkms add rtbth/4.0.0 && \
-sudo dkms build rtbth/4.0.0 && \
-sudo dkms install rtbth/4.0.0 && \
-cd /usr/src/rtbth-4.0.0 && cd tools && sudo bash upgrade-firmware.sh && cd .. && \
+
+export MOD_VER=4.1.0
+export SOURCE=https://github.com/ry-diffusion/rtbth-ralink-3290-linux-dkms.git
+
+sudo git clone ${SOURCE} /usr/src/rtbth-${MOD_VER} && \
+sudo dkms add rtbth/${MOD_VER} && \
+sudo dkms build rtbth/${MOD_VER} && \
+sudo dkms install rtbth/${MOD_VER} && \
+cd /usr/src/rtbth-${MOD_VER} && \
+cd tools && \
+sudo bash upgrade-firmware.sh && \
+cd .. && \
 sudo make install && \
 sudo systemctl enable --now rtbth
-``` 
 
-### Usage ###
+```
+
+## Usage
 
 ```sh
 # Init
@@ -37,8 +49,3 @@ sudo rfkill unblock bluetooth
 sudo pkill -2 rtbt
 sudo rmmod rtbth
 ```
-
-
-### Installation: ###
-
-[Ubuntu and derivatives](https://launchpad.net/~blaze/+archive/ubuntu/rtbth-dkms)
