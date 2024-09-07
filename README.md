@@ -15,7 +15,7 @@ This module has no official support by Mediatek. Support was discontinued.
 
 ```sh
 
-export MOD_VER=4.1.1
+export MOD_VER=4.1.2
 export SOURCE=https://github.com/ry-diffusion/rtbth-ralink-3290-linux-dkms.git
 
 sudo git clone ${SOURCE} /usr/src/rtbth-${MOD_VER} && \
